@@ -1,0 +1,7 @@
+# files
+*.gz
+*.csv
+.env
+*.pyc
+# Virtual Environment
+.venv
