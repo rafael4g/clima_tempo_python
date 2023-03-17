@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://mondrian.claro.com.br/fonts/mondrian-fonts-latest.css"
+    />
+    <title>Item Details</title>
+  </head>
+  <body>
+    <main>
+      <h1>Item ID: {{ items[0].city_name }}</h1>
+
+      <p>Clima: {{ items[0].description }}</p>
+      <p>Atual: {{ items[0].temp_day }}</p>
+      <p>Minima: {{ items[0].temp_min }}</p>
+      <p>Maxima: {{ items[0].temp_max }}</p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://mondrian.claro.com.br/fonts/mondrian-fonts-latest.css"
+    />
+    <title>Item Details</title>
+  </head>
+  <body>
+    <main>
+      <h1>Item ID: {{ id }}</h1>
+      <div class="temperature-now">
+        <div class="location"></div>
+        <div class="temp"></div>
+        <div class="statistics">
+          <div class="info"></div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

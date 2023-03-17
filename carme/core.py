@@ -1,5 +1,8 @@
 from typing import List, Optional
-from datetime import datetime
+from datetime import (
+    datetime, 
+    timedelta
+)
 
 # from sympy import im
 from sqlmodel import select
@@ -106,9 +109,10 @@ def add_interval_to_database(
 ) -> bool:
     with get_session() as session:
         intervals = Interval(**locals())
-        if interval_dt_unix > unix_timestamp:        
-            session.add(intervals)  # INSERT INTO
-            session.commit()
+        #delete_interval_city_id = delete_interval_from_database(interval_dt_unix=unix_timestamp, id_data=id_data)       
+        #if delete_interval_city_id: 
+        session.add(intervals)  # INSERT INTO
+        session.commit()
 
     return True
 
@@ -126,11 +130,28 @@ def delete_interval_from_database(interval_dt_unix: int, id_data: int) -> bool:
     return True
 
 
-def get_interval_from_database(id_data: Optional[int] = None) -> List[Interval]:
+def get_all_interval_from_database(id_data: Optional[int] = None) -> List[Interval]:
+    with get_session() as session:
+        sql = select(Interval)
+        current_date_time = datetime.now()  # 2023-03-02 15:03:19
+        current_date = datetime.strptime(datetime.strftime(current_date_time, "%Y-%m-%d"), "%Y-%m-%d") # 2023-03-02
+        yesterday_date = int(datetime.timestamp( (datetime.strptime((current_date.today().replace(hour=23, minute=0, second=0)-timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S'), "%Y-%m-%d %H:%M:%S")) ))
+        tomorrow_date = int(datetime.timestamp( (datetime.strptime((current_date.today().replace(hour=0, minute=0, second=0)+timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S'), "%Y-%m-%d %H:%M:%S")) ))  
+        
+        if id_data:
+            sql = sql.where(Interval.id_data == id_data, Interval.interval_dt_unix > yesterday_date, Interval.interval_dt_unix < tomorrow_date).\
+                order_by(Interval.interval_dt_unix.asc())   
+        return list(
+            session.exec(sql)
+        )  # utilizar sem a list para performance e paginação
+
+def get_interval_current_day_from_database(id_data: int, interval_dt_current_unix: int) -> List[Interval]:
     with get_session() as session:
         sql = select(Interval)
         if id_data:
-            sql = sql.where(Interval.id_data == id_data)            
+            sql = sql.where(Interval).filter(
+                (Interval.id_data == id_data) & 
+                (Interval.interval_dt_unix >= interval_dt_current_unix))      
         return list(
             session.exec(sql)
         )  # utilizar sem a list para performance e paginação

@@ -24,7 +24,7 @@ class Cities(SQLModel, table=True):
 class Interval(SQLModel, table=True):
     id: Optional[int] = Field(primary_key=True, default=None, index=True)
     id_data: int
-    interval_dt_unix: int
+    interval_dt_unix: int = Field(index=True)
     current_city_interval_main_temp: str
     current_city_interval_main_fells_like: str
     current_city_interval_main_temp_min: str
